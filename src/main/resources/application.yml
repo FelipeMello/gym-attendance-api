@@ -1,0 +1,24 @@
+server:
+  port: ${PORT:9001}
+  servlet:
+    context-path: /api
+spring:
+  datasource:
+    url: ${URL:jdbc:postgresql://localhost:5432/mygym}
+    username: ${USERNAME:gymapi}
+    password: ${PASSWORD:gym1243OSOKpadpas-69}
+  jpa:
+    hibernate:
+      ddl-auto:
+        - create-drop
+        - create
+        - update
+        - validate
+        - none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+logging:
+  level:
+    org.hibernate.sql: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE

@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: mygym
+      POSTGRES_USER: gymapi
+      POSTGRES_PASSWORD: gym1243OSOKpadpas-69
+    ports:
+      - "5432:5432"
+
+  gym-attendance:
+    image: gym-attendance:latest
+    ports:
+      - "9001:9001"
+    depends_on:
+      - postgres

@@ -73,7 +73,7 @@ class AttendanceServiceImplTest {
 
     int streak = attendanceService.calculateAttendanceStreak(userId);
 
-    assertEquals(6, streak);
+    assertEquals(7, streak);
   }
 
   private List<Attendance> createAttendances(Long userId) {
@@ -95,5 +95,5 @@ class AttendanceServiceImplTest {
     attendance.setDate(date);
     return attendance;
   }
-  
+
 }

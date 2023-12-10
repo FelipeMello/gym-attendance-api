@@ -1,6 +1,7 @@
 package com.felipemello.gym.attendance.controller;
 
 import com.felipemello.gym.attendance.service.AttendanceService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Attendance")
 @RestController
 @AllArgsConstructor
 @Slf4j

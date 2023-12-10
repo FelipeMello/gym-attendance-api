@@ -3,6 +3,7 @@ package com.felipemello.gym.attendance.controller;
 import com.felipemello.gym.attendance.entity.User;
 import com.felipemello.gym.attendance.model.UserDTO;
 import com.felipemello.gym.attendance.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "User")
 @RestController
 @AllArgsConstructor
 @Slf4j

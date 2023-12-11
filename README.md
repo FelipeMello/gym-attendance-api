@@ -1,63 +1,127 @@
-# Gym Attendance API
+# Gym Attendance Management System
 
-The Gym Attendance API is a Spring Boot application that provides endpoints for tracking gym
-attendance, checking discount eligibility, and retrieving member attendance streaks.
+This application is a Gym Attendance Management System developed for learning purposes.
 
-## Table of Contents
+## Prerequisites
 
-- [Getting Started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Installation](#installation)
-- [Usage](#usage)
-    - [Swagger API Documentation](#swagger-api-documentation)
-- [Endpoints](#endpoints)
-- [Testing](#testing)
-- [Contributing](#contributing)
-- [License](#license)
+Ensure you have the following tools installed:
 
-## Getting Started
+- JDK 21
+- Maven
 
-### Prerequisites
+## Build and Deployment
 
-Before running the application, ensure you have the following installed:
+- Generate the JAR for the application:
+```bash
+   mvn clean package
+```
 
-- [Java JDK](https://www.oracle.com/java/technologies/javase-downloads.html)
-- [Docker](https://www.docker.com/)
-- [Docker Compose](https://docs.docker.com/compose/)
-
-### Installation
-
-1. Clone the repository:
+- Deploy the JAR to Docker:
 
 ```bash
-   git clone https://github.com/your-username/gym-attendance-api.git |
-   cd gym-attendance-api |
-   docker-compose up --build
- ```
+docker build -t gym-attendance:latest . | docker-compose up --build
+```
 
-The application will be accessible at http://localhost:9001.
+### Swagger UI for convenient API exploration:
 
-### Usage
+- url: http://localhost:8000/api/swagger-ui/index.html#/
 
-#### Swagger API Documentation
+## API Documentation Endpoints
 
-The API documentation is available using Swagger UI. You can access it at:
+## Endpoints
 
-#### Swagger UI
+#### Create Member
 
-This interface allows you to explore the API endpoints and test them directly from your browser.
+Create a member by providing the necessary details.
 
-### Endpoints
+- **URL**: `http://localhost:8000/api/members`
+- **Method**: `POST`
+- **Content Type**: `application/json`
 
-Add Attendance Record
+##### Request Body
 
-Endpoint: POST /api/attendance/add
-Description: Adds a record of gym attendance for a member on a specific date.
-Check Discount Eligibility
+```json
+{
+  "name": "Felipe",
+  "email": "felipe@gmail.com",
+  "password": "1234"
+}
+```
 
-Endpoint: GET /api/member/{userId}/discount-eligibility
-Description: Checks if a member is eligible for a gym membership discount.
-Retrieve User's Attendance Streak
+#### Get a Member
 
-Endpoint: GET /api/member/{userId}/attendance-streak
-Description: Retrieves the current attendance streak (number of weeks in a row) for a member.
+Create a member by providing the necessary details.
+
+- **URL**: `http://localhost:8000/api/members/{memberid}`
+- **Method**: `GET`
+- **Content Type**: `application/json`
+
+##### Example Response
+
+```json
+{
+  "id": 1,
+  "name": "Felipe",
+  "email": "felipe@gmail.com",
+  "password": null,
+  "attendances": [
+    {
+      "id": 1,
+      "date": "2023-12-06"
+    },
+    {
+      "id": 2,
+      "date": "2023-12-05"
+    },
+    {
+      "id": 3,
+      "date": "2023-12-04"
+    }
+  ]
+}
+
+```
+
+#### Check Discount Eligibility
+
+- **URL**: `http://localhost:8000/api/members/{memberid}/discount-eligibility`
+- **Method**: `GET`
+
+##### Response boolean
+
+#### Add Attendance
+
+- **URL**: `http://localhost:8000/api/attendances`
+- **Method**: `POST`
+- **Request Param**: `memberid`
+- **Request Param**: `date`
+
+#### Get Attendance Streak
+
+- **URL**: `http://localhost:8000/api/members/{memberid}/attendance-streak`
+- **Method**: `GET`
+
+## Technologies Used
+
+- Docker
+- Docker Compose
+- init.sql
+- Spring Boot
+- Hibernate
+- Java
+- JPA
+- PostgreSQL
+- Maven
+- JUnit
+- Mockito
+- Swagger
+- Lombok
+
+## Developer
+
+https://www.linkedin.com/in/felipemelloit/
+
+## Acknowledgments
+
+This project is for educational purposes and was developed using various technologies for learning
+purposes.

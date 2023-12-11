@@ -11,16 +11,20 @@ Ensure you have the following tools installed:
 
 ## Build and Deployment
 
-1. Generate the JAR for the application:
+- Generate the JAR for the application:
 ```bash
    mvn clean package
 ```
 
-2. Deploy the JAR to Docker:
+- Deploy the JAR to Docker:
 
 ```bash
 docker build -t gym-attendance:latest . | docker-compose up --build
 ```
+
+### Swagger UI for convenient API exploration:
+
+- url: http://localhost:8000/api/swagger-ui/index.html#/
 
 ## API Documentation Endpoints
 

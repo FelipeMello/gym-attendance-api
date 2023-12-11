@@ -19,7 +19,7 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class Member {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +33,6 @@ public class User {
   @JsonIgnore
   private String password;
 
-  @OneToMany(mappedBy = "user")
+  @OneToMany(mappedBy = "member")
   private List<Attendance> attendances;
 }

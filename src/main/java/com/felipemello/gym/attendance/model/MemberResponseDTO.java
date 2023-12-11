@@ -1,6 +1,6 @@
 package com.felipemello.gym.attendance.model;
 
-import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,14 +12,11 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDTO {
+public class MemberResponseDTO {
 
-  @NotBlank(message = "Name is mandatory")
+  private Long id;
   private String name;
-
-  @NotBlank(message = "Email is mandatory")
   private String email;
-
-  @NotBlank(message = "Password is mandatory")
   private String password;
+  private List<AttendanceDTO> attendances;
 }

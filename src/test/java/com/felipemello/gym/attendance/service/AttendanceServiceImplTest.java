@@ -7,10 +7,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.felipemello.gym.attendance.entity.Attendance;
-import com.felipemello.gym.attendance.entity.User;
+import com.felipemello.gym.attendance.entity.Member;
 import com.felipemello.gym.attendance.exceptions.UserNotFoundException;
 import com.felipemello.gym.attendance.repository.AttendanceRepository;
-import com.felipemello.gym.attendance.repository.UserRepository;
+import com.felipemello.gym.attendance.repository.MemberRepository;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class AttendanceServiceImplTest {
 
   @Mock
-  private UserRepository userRepository;
+  private MemberRepository memberRepository;
 
   @Mock
   private AttendanceRepository attendanceRepository;
@@ -38,60 +38,62 @@ class AttendanceServiceImplTest {
 
   @Test
   void testAddAttendance() {
-    Long userId = 1L;
+    Long memberId = 1L;
     LocalDate date = LocalDate.now();
 
-    User user = new User();
-    user.setId(userId);
+    Member member = new Member();
+    member.setId(memberId);
 
-    when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+    when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
 
-    attendanceService.addAttendance(userId, date);
+    attendanceService.addAttendance(memberId, date);
 
     verify(attendanceRepository, times(1)).save(Mockito.any(Attendance.class));
   }
 
   @Test
   void testAddAttendanceUserNotFound() {
-    Long userId = 1L;
+    Long memberId = 1L;
     LocalDate date = LocalDate.now();
 
-    when(userRepository.findById(userId)).thenReturn(Optional.empty());
+    when(memberRepository.findById(memberId)).thenReturn(Optional.empty());
 
-    assertThrows(UserNotFoundException.class, () -> attendanceService.addAttendance(userId, date));
+    assertThrows(UserNotFoundException.class,
+        () -> attendanceService.addAttendance(memberId, date));
 
     verify(attendanceRepository, Mockito.never()).save(Mockito.any(Attendance.class));
   }
 
   @Test
   void testCalculateAttendanceStreak() {
-    Long userId = 1L;
+    Long memberId = 1L;
 
-    List<Attendance> attendances = createAttendances(userId);
+    List<Attendance> attendances = createAttendances(memberId);
 
-    when(attendanceRepository.findByUserIdOrderByDateAsc(userId)).thenReturn(attendances);
+    when(attendanceRepository.findByMemberIdOrderByDateAsc(memberId)).thenReturn(attendances);
 
-    int streak = attendanceService.calculateAttendanceStreak(userId);
+    int streak = attendanceService.calculateAttendanceStreak(memberId);
 
     assertEquals(7, streak);
   }
 
-  private List<Attendance> createAttendances(Long userId) {
+  private List<Attendance> createAttendances(Long memberId) {
     List<Attendance> attendances = new ArrayList<>();
-    attendances.add(createAttendance(userId, LocalDate.now().minusDays(7)));
-    attendances.add(createAttendance(userId, LocalDate.now().minusDays(6)));
-    attendances.add(createAttendance(userId, LocalDate.now().minusDays(5)));
-    attendances.add(createAttendance(userId, LocalDate.now().minusDays(3)));
-    attendances.add(createAttendance(userId, LocalDate.now().minusDays(2)));
-    attendances.add(createAttendance(userId, LocalDate.now().minusDays(1)));
-    attendances.add(createAttendance(userId, LocalDate.now()));
+    attendances.add(createAttendance(memberId, LocalDate.now().minusDays(7)));
+    attendances.add(createAttendance(memberId, LocalDate.now().minusDays(6)));
+    attendances.add(createAttendance(memberId, LocalDate.now().minusDays(5)));
+    attendances.add(createAttendance(memberId, LocalDate.now().minusDays(3)));
+    attendances.add(createAttendance(memberId, LocalDate.now().minusDays(2)));
+    attendances.add(createAttendance(memberId, LocalDate.now().minusDays(1)));
+    attendances.add(createAttendance(memberId, LocalDate.now()));
     return attendances;
   }
 
 
-  private Attendance createAttendance(Long userId, LocalDate date) {
+  private Attendance createAttendance(Long memberId, LocalDate date) {
     Attendance attendance = new Attendance();
-    attendance.setUser(new User(userId, "Test", "test@example.com", "password", new ArrayList<>()));
+    attendance.setMember(
+        new Member(memberId, "Test", "test@example.com", "password", new ArrayList<>()));
     attendance.setDate(date);
     return attendance;
   }

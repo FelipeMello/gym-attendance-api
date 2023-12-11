@@ -17,6 +17,5 @@ public class MemberResponseDTO {
   private Long id;
   private String name;
   private String email;
-  private String password;
   private List<AttendanceDTO> attendances;
 }

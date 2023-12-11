@@ -10,11 +10,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-import com.felipemello.gym.attendance.entity.User;
+import com.felipemello.gym.attendance.entity.Member;
 import com.felipemello.gym.attendance.exceptions.UserAlreadyExistsException;
 import com.felipemello.gym.attendance.exceptions.UserNotFoundException;
-import com.felipemello.gym.attendance.model.UserDTO;
-import com.felipemello.gym.attendance.repository.UserRepository;
+import com.felipemello.gym.attendance.model.MemberDTO;
+import com.felipemello.gym.attendance.model.MemberResponseDTO;
+import com.felipemello.gym.attendance.repository.MemberRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -25,26 +26,26 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)
-class UserServiceImplTest {
+class MemberServiceImplTest {
 
   @Mock
-  private UserRepository userRepository;
+  private MemberRepository memberRepository;
 
   @Mock
   private AttendanceService attendanceService;
 
   @InjectMocks
-  private UserServiceImpl userService;
+  private MemberServiceImpl userService;
 
   @Test
   void testGetUserById() {
     Long userId = 1L;
-    User mockUser = new User();
-    mockUser.setId(userId);
+    Member mockMember = new Member();
+    mockMember.setId(userId);
 
-    when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
+    when(memberRepository.findById(userId)).thenReturn(Optional.of(mockMember));
 
-    User result = userService.getUserById(userId);
+    MemberResponseDTO result = userService.getMemberById(userId);
 
     assertEquals(userId, result.getId());
   }
@@ -52,64 +53,64 @@ class UserServiceImplTest {
   @Test
   void testGetUserById_UserNotFound() {
     Long userId = 1L;
-    when(userRepository.findById(userId)).thenReturn(Optional.empty());
+    when(memberRepository.findById(userId)).thenReturn(Optional.empty());
 
-    assertThrows(UserNotFoundException.class, () -> userService.getUserById(userId));
+    assertThrows(UserNotFoundException.class, () -> userService.getMemberById(userId));
 
-    verify(userRepository, times(1)).findById(userId);
+    verify(memberRepository, times(1)).findById(userId);
   }
 
   @Test
   void testCreateUser() {
-    UserDTO userDTO = UserDTO.builder()
+    MemberDTO memberDTO = MemberDTO.builder()
         .email("john@example.com")
         .name("John Doe")
         .password("password123")
         .build();
 
-    when(userRepository.findByEmail(userDTO.getEmail())).thenReturn(Optional.empty());
-    when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
-      User user = invocation.getArgument(0);
-      user.setId(1L);
-      user.setName(userDTO.getName());
-      user.setEmail(userDTO.getEmail());
-      user.setPassword(userDTO.getPassword());
-      return user;
+    when(memberRepository.findByEmail(memberDTO.getEmail())).thenReturn(Optional.empty());
+    when(memberRepository.save(any(Member.class))).thenAnswer(invocation -> {
+      Member member = invocation.getArgument(0);
+      member.setId(1L);
+      member.setName(memberDTO.getName());
+      member.setEmail(memberDTO.getEmail());
+      member.setPassword(memberDTO.getPassword());
+      return member;
     });
 
-    User result = userService.createUser(userDTO);
+    Member result = userService.createMember(memberDTO);
 
-    assertEquals(userDTO.getName(), result.getName());
-    assertEquals(userDTO.getEmail(), result.getEmail());
-    assertEquals(userDTO.getPassword(), result.getPassword());
-    verify(userRepository, times(1)).save(any(User.class));
+    assertEquals(memberDTO.getName(), result.getName());
+    assertEquals(memberDTO.getEmail(), result.getEmail());
+    assertEquals(memberDTO.getPassword(), result.getPassword());
+    verify(memberRepository, times(1)).save(any(Member.class));
   }
 
   @Test
   void testCreateUser_UserAlreadyExists() {
-    UserDTO userDTO = UserDTO.builder()
+    MemberDTO memberDTO = MemberDTO.builder()
         .email("john@example.com")
         .name("John Doe")
         .password("password123")
         .build();
 
-    when(userRepository.findByEmail(userDTO.getEmail())).thenReturn(Optional.of(new User()));
+    when(memberRepository.findByEmail(memberDTO.getEmail())).thenReturn(Optional.of(new Member()));
 
-    assertThrows(UserAlreadyExistsException.class, () -> userService.createUser(userDTO));
+    assertThrows(UserAlreadyExistsException.class, () -> userService.createMember(memberDTO));
 
-    verify(userRepository, times(1)).findByEmail(userDTO.getEmail());
+    verify(memberRepository, times(1)).findByEmail(memberDTO.getEmail());
   }
 
   @Test
   void testCheckDiscountEligibility() {
     Long userId = 1L;
 
-    when(userRepository.getUserById(userId)).thenReturn(Optional.of(new User()));
+    when(memberRepository.getMemberById(userId)).thenReturn(Optional.of(new Member()));
     when(attendanceService.calculateAttendanceStreak(userId)).thenReturn(3);
 
     assertTrue(userService.checkDiscountEligibility(userId));
 
-    verify(userRepository, times(1)).getUserById(userId);
+    verify(memberRepository, times(1)).getMemberById(userId);
     verify(attendanceService, times(1)).calculateAttendanceStreak(userId);
   }
 
@@ -117,23 +118,23 @@ class UserServiceImplTest {
   void testCheckDiscountEligibility_NotElegible() {
     Long userId = 1L;
 
-    when(userRepository.getUserById(userId)).thenReturn(Optional.of(new User()));
+    when(memberRepository.getMemberById(userId)).thenReturn(Optional.of(new Member()));
     when(attendanceService.calculateAttendanceStreak(userId)).thenReturn(2);
 
     assertFalse(userService.checkDiscountEligibility(userId));
 
-    verify(userRepository, times(1)).getUserById(userId);
+    verify(memberRepository, times(1)).getMemberById(userId);
     verify(attendanceService, times(1)).calculateAttendanceStreak(userId);
   }
 
   @Test
   void testCheckDiscountEligibility_UserNotFound() {
     Long userId = 1L;
-    when(userRepository.getUserById(userId)).thenReturn(Optional.empty());
+    when(memberRepository.getMemberById(userId)).thenReturn(Optional.empty());
 
     assertThrows(UserNotFoundException.class, () -> userService.checkDiscountEligibility(userId));
 
-    verify(userRepository, times(1)).getUserById(userId);
+    verify(memberRepository, times(1)).getMemberById(userId);
     verifyNoInteractions(attendanceService); // Ensure that attendanceService is not called
   }
 
@@ -142,23 +143,23 @@ class UserServiceImplTest {
   void testGetUserStreak() {
     Long userId = 1L;
 
-    when(userRepository.getUserById(userId)).thenReturn(Optional.of(new User()));
+    when(memberRepository.getMemberById(userId)).thenReturn(Optional.of(new Member()));
     when(attendanceService.calculateAttendanceStreak(userId)).thenReturn(3);
 
-    assertEquals(3, userService.getUserStreak(userId));
+    assertEquals(3, userService.getMemberStreak(userId));
 
-    verify(userRepository, times(1)).getUserById(userId);
+    verify(memberRepository, times(1)).getMemberById(userId);
     verify(attendanceService, times(1)).calculateAttendanceStreak(userId);
   }
 
   @Test
   void testGetUserStreak_UserNotFound() {
     Long userId = 1L;
-    when(userRepository.getUserById(userId)).thenReturn(Optional.empty());
+    when(memberRepository.getMemberById(userId)).thenReturn(Optional.empty());
 
-    assertThrows(UserNotFoundException.class, () -> userService.getUserStreak(userId));
+    assertThrows(UserNotFoundException.class, () -> userService.getMemberStreak(userId));
 
-    verify(userRepository, times(1)).getUserById(userId);
+    verify(memberRepository, times(1)).getMemberById(userId);
     verifyNoInteractions(attendanceService); // Ensure that attendanceService is not called
   }
 }

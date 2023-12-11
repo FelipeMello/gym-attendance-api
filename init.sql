@@ -1,9 +1,5 @@
 -- init.sql
 
--- Connect to the database
-\c
-mygym;
-
 -- Grant privileges to the member
 GRANT ALL PRIVILEGES ON DATABASE
 mygym TO gymapi;

@@ -35,24 +35,22 @@ public class AttendanceServiceImpl implements AttendanceService {
       return 0;
     }
 
-    int maxStreak = 0;
     int streak = 0;
-
-    LocalDate previousDate = userAttendances.getFirst().getDate();
+    LocalDate startDate = userAttendances.getFirst().getDate();
 
     for (Attendance attendance : userAttendances) {
       LocalDate currentDate = attendance.getDate();
 
-      if (previousDate.plusDays(7).isBefore(currentDate)) {
-        maxStreak = Math.max(maxStreak, streak);
-        streak = 0;
+      // Check if the attendance is within the same week as the previous one
+      if (currentDate.minusWeeks(1).isBefore(startDate)) {
+        streak++;
+      } else {
+        streak = 1; // Start a new streak if attendance is in a new week
+        startDate = currentDate;
       }
-
-      streak++;
-      previousDate = currentDate;
     }
 
-    return Math.max(maxStreak, streak);
+    return streak;
   }
 
 

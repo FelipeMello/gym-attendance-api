@@ -74,11 +74,13 @@ class AttendanceServiceImplTest {
 
     int streak = attendanceService.calculateAttendanceStreak(memberId);
 
-    assertEquals(7, streak);
+    assertEquals(5, streak);
   }
+
 
   private List<Attendance> createAttendances(Long memberId) {
     List<Attendance> attendances = new ArrayList<>();
+    attendances.add(createAttendance(memberId, LocalDate.now().minusDays(12)));
     attendances.add(createAttendance(memberId, LocalDate.now().minusDays(7)));
     attendances.add(createAttendance(memberId, LocalDate.now().minusDays(6)));
     attendances.add(createAttendance(memberId, LocalDate.now().minusDays(5)));

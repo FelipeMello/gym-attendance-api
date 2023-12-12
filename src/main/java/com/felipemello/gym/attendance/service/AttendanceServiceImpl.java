@@ -29,7 +29,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
   @Override
   public int calculateAttendanceStreak(Long userId) {
-    List<Attendance> userAttendances = attendanceRepository.findByMemberIdOrderByDateAsc(userId);
+    List<Attendance> userAttendances = attendanceRepository.findByMemberIdOrderByDateDesc(userId);
 
     if (userAttendances.isEmpty()) {
       return 0;

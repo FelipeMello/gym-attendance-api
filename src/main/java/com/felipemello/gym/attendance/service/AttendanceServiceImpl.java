@@ -49,9 +49,7 @@ public class AttendanceServiceImpl implements AttendanceService {
         startDate = currentDate;
       }
     }
-
     return streak;
   }
-
 
 }

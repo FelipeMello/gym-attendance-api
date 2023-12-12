@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
-  List<Attendance> findByMemberIdOrderByDateAsc(Long memberId);
+  List<Attendance> findByMemberIdOrderByDateDesc(Long memberId);
 }

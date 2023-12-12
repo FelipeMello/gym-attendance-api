@@ -13,6 +13,8 @@ import com.felipemello.gym.attendance.repository.AttendanceRepository;
 import com.felipemello.gym.attendance.repository.MemberRepository;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Tag;
@@ -70,12 +72,48 @@ class AttendanceServiceImplTest {
 
     List<Attendance> attendances = createAttendances(memberId);
 
-    when(attendanceRepository.findByMemberIdOrderByDateAsc(memberId)).thenReturn(attendances);
+    when(attendanceRepository.findByMemberIdOrderByDateDesc(memberId)).thenReturn(attendances);
 
     int streak = attendanceService.calculateAttendanceStreak(memberId);
 
     assertEquals(5, streak);
   }
+
+  @Test
+  void testCalculateAttendanceStreakDemoFailed() {
+    /*
+            {
+            "id": 1,
+            "date": "2023-12-04"
+        },
+        {
+            "id": 2,
+            "date": "2023-11-28"
+        },
+        {
+            "id": 3,
+            "date": "2023-11-24"
+        },
+        {
+            "id": 4,
+            "date": "2023-12-12"
+        }
+     */
+    Long memberId = 1L;
+
+    List<Attendance> attendances = new ArrayList<>();
+    attendances.add(createAttendance(memberId, LocalDate.of(2023, 12, 4)));
+    attendances.add(createAttendance(memberId, LocalDate.of(2023, 11, 28)));
+    attendances.add(createAttendance(memberId, LocalDate.of(2023, 11, 24)));
+    attendances.add(createAttendance(memberId, LocalDate.of(2023, 12, 12)));
+    Collections.sort(attendances, Comparator.comparing(Attendance::getDate).reversed());
+    when(attendanceRepository.findByMemberIdOrderByDateDesc(memberId)).thenReturn(attendances);
+
+    int streak = attendanceService.calculateAttendanceStreak(memberId);
+
+    assertEquals(4, streak);
+  }
+
 
 
   private List<Attendance> createAttendances(Long memberId) {

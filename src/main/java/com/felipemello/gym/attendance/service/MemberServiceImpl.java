@@ -9,6 +9,7 @@ import com.felipemello.gym.attendance.model.MemberDTO;
 import com.felipemello.gym.attendance.model.MemberResponseDTO;
 import com.felipemello.gym.attendance.repository.MemberRepository;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
@@ -42,6 +43,7 @@ public class MemberServiceImpl implements MemberService {
 
   private List<AttendanceDTO> buildAttendanceDto(List<Attendance> attendances) {
     return attendances.stream()
+        .sorted(Comparator.comparing(Attendance::getDate).reversed())
         .map(attendance -> AttendanceDTO.builder()
             .id(attendance.getId())
             .date(attendance.getDate())
